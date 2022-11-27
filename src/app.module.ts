@@ -3,6 +3,8 @@ import {UserModule} from './user/user.module';
 import {ConfigModule} from "@nestjs/config";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {User} from "./user/user.model";
+import { TweetModule } from './tweet/tweet.module';
+import { Tweet } from "./tweet/tweet.model";
 
 @Module({
     imports: [
@@ -15,12 +17,13 @@ import {User} from "./user/user.model";
             database: "twitter",
             synchronize: true,
             autoLoadModels: true,
-            models: [User],
+            models: [User, Tweet],
         }),
         ConfigModule.forRoot({
             envFilePath: '.env'
         }),
-        UserModule
+        UserModule,
+        TweetModule
     ],
 })
 
