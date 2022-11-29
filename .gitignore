@@ -3,6 +3,8 @@
 /node_modules
 /usersFiles
 
+src/jwt-token/jwt-token.constants.ts
+
 # Logs
 logs
 *.log

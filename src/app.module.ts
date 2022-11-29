@@ -3,8 +3,10 @@ import {UserModule} from './user/user.module';
 import {ConfigModule} from "@nestjs/config";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {User} from "./user/user.model";
-import { TweetModule } from './tweet/tweet.module';
-import { Tweet } from "./tweet/tweet.model";
+import {TweetModule} from './tweet/tweet.module';
+import {Tweet} from "./tweet/tweet.model";
+import {AuthModule} from './auth/auth.module';
+import {JwtTokenModule} from './jwt-token/jwt-token.module';
 
 @Module({
     imports: [
@@ -23,7 +25,9 @@ import { Tweet } from "./tweet/tweet.model";
             envFilePath: '.env'
         }),
         UserModule,
-        TweetModule
+        TweetModule,
+        AuthModule,
+        JwtTokenModule
     ],
 })
 

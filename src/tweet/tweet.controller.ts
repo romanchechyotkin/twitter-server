@@ -1,5 +1,8 @@
-import {Body, Controller, Delete, Get, Param, Post, Put} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards} from "@nestjs/common";
 import {TweetService} from "./tweet.service";
+import {LoginGuard} from "../auth/login.guard";
+import {CreateTweetDto} from "./dto/create-tweet.dto";
+import { UpdateTweetDto } from "./dto/update-tweet.dto";
 
 @Controller('tweet')
 export class TweetController {
@@ -11,24 +14,34 @@ export class TweetController {
         return this.tweetService.getAllTweets()
     }
 
+    @Get('/user/:id')
+    getAllUserTweets(@Param('id') id) {
+        return this.tweetService.getAllUserTweets(id)
+    }
+
+
     @Get('/:id')
     getOneTweet(@Param('id') id) {
-      return this.tweetService.getOneTweet(id)
+        return this.tweetService.getOneTweet(id)
     }
 
     @Post()
-    createTweet(@Body() dto) {
-      return this.tweetService.createTweet(dto)
+    @UseGuards(LoginGuard)
+    createTweet(@Body() createTweetDto: CreateTweetDto, @Req() req) {
+        const user = req.user
+        return this.tweetService.createTweet({...createTweetDto, user_id: user.id})
     }
 
     @Put('/:id')
-    updateTweet(@Param('id') id, @Body() dto) {
-      return this.tweetService.updateTweet(dto, id)
+    @UseGuards(LoginGuard)
+    updateTweet(@Param('id') id, @Body() updateTweetDto: UpdateTweetDto) {
+        return this.tweetService.updateTweet(updateTweetDto, id)
     }
 
     @Delete('/:id')
+    @UseGuards(LoginGuard)
     deleteTweet(@Param('id') id) {
-      return this.tweetService.deleteTweet(id)
+        return this.tweetService.deleteTweet(id)
     }
 
 }

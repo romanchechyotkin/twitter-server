@@ -10,7 +10,8 @@ import { Tweet } from "../tweet/tweet.model";
         SequelizeModule.forFeature([User, Tweet])
     ],
     controllers: [UserController],
-    providers: [UserService]
+    providers: [UserService],
+    exports: [UserService]
 })
 
 export class UserModule {}

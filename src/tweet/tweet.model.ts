@@ -1,9 +1,9 @@
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
-import { User } from "../user/user.model";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import {User} from "../user/user.model";
 
 interface TweetCreationAttrs {
-  email: string,
-  password: string;
+      text: string,
+      user_id: number;
 }
 
 @Table({tableName: 'tweet', freezeTableName: true, createdAt: true, updatedAt: true})
@@ -14,7 +14,10 @@ export class Tweet extends Model<Tweet, TweetCreationAttrs> {
 
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER})
-    user_id: number
+    user_id: number;
+
+    @BelongsTo(() => User)
+    user: User
 
     @Column({type: DataType.STRING, allowNull: false})
     text: string;

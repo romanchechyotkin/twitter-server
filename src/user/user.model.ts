@@ -19,6 +19,6 @@ export class User extends Model<User, UserCreationAttrs> {
     password: string;
 
     @HasMany(() => Tweet)
-    tweets: Tweet[]
+    tweets: Tweet[];
 
 }
