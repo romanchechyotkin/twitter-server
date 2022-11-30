@@ -4,6 +4,8 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { MailController } from './mail.controller';
 import * as path from 'path'
+import { MongooseModule } from "@nestjs/mongoose";
+import { Mail, MailSchema } from "./mail.schema";
 
 @Module({
     imports: [
@@ -27,6 +29,7 @@ import * as path from 'path'
                 },
             },
         }),
+        MongooseModule.forFeature([{name: Mail.name, schema: MailSchema}])
     ],
     providers: [MailService],
     controllers: [MailController],

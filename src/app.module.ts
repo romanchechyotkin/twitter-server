@@ -8,6 +8,7 @@ import {Tweet} from "./tweet/tweet.model";
 import {AuthModule} from './auth/auth.module';
 import {JwtTokenModule} from './jwt-token/jwt-token.module';
 import { MailModule } from './mail/mail.module';
+import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { MailModule } from './mail/mail.module';
             autoLoadModels: true,
             models: [User, Tweet],
         }),
+        MongooseModule.forRoot('mongodb+srv://user:DjBPjvEboBe3Kf5r@cluster0.snj2z4x.mongodb.net/twitter'),
         ConfigModule.forRoot({
             envFilePath: '.env',
             isGlobal: true,

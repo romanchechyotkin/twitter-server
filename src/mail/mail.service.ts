@@ -1,12 +1,17 @@
 import {Injectable} from '@nestjs/common';
-import { MailerService } from "@nestjs-modules/mailer";
+import {MailerService} from "@nestjs-modules/mailer";
+import {InjectModel} from "@nestjs/mongoose";
+import {Mail, MailDocument} from "./mail.schema";
+import {Model} from "mongoose";
 
 @Injectable()
 export class MailService {
 
-    constructor(private mailerService: MailerService) {}
+    constructor(@InjectModel(Mail.name) private mailModel: Model<MailDocument>,
+                private mailerService: MailerService) {}
 
     async sendRegistrationEmail(email) {
+
         await this.mailerService.sendMail({
             to: email,
             from: process.env.SMTP_USER,
@@ -16,6 +21,9 @@ export class MailService {
                 name: email.split('@')[0]
             }
         })
+
+        await this.mailModel.create({email: email, type: 'registration'})
+
     }
 
 }
