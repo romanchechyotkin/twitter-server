@@ -22,7 +22,7 @@ export class MailService {
             }
         })
 
-        await this.mailModel.create({email: email, type: 'registration'})
+        await this.mailModel.create({email: email, template: 'registration'})
 
     }
 

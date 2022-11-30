@@ -10,7 +10,7 @@ export class Mail {
     email: string;
 
     @Prop()
-    type: string;
+    template: string;
 
     @Prop({default: new Date()})
     date: Date;
