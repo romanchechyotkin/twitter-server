@@ -34,14 +34,16 @@ export class TweetController {
 
     @Put('/:id')
     @UseGuards(LoginGuard)
-    updateTweet(@Param('id') id, @Body() updateTweetDto: UpdateTweetDto) {
-        return this.tweetService.updateTweet(updateTweetDto, id)
+    updateTweet(@Param('id') id, @Body() updateTweetDto: UpdateTweetDto, @Req() req) {
+        const user = req.user
+        return this.tweetService.updateTweet(updateTweetDto, id, user)
     }
 
     @Delete('/:id')
     @UseGuards(LoginGuard)
-    deleteTweet(@Param('id') id) {
-        return this.tweetService.deleteTweet(id)
+    deleteTweet(@Param('id') id, @Req() req) {
+        const user = req.user
+        return this.tweetService.deleteTweet(id, user)
     }
 
 }

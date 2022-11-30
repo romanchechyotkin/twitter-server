@@ -28,12 +28,14 @@ export class TweetService {
         return tweet
     }
 
-    async updateTweet(dto, id) {
-        return this.tweetModel.update(dto, {where: {id}})
+    async updateTweet(dto, id, user) {
+        const user_id = user.id
+        return this.tweetModel.update(dto, {where: {id, user_id}})
     }
 
-    async deleteTweet(id) {
-        return this.tweetModel.destroy({where: {id}})
+    async deleteTweet(id, user) {
+        const user_id = user.id
+        return this.tweetModel.destroy({where: {id, user_id}})
     }
 
 }
