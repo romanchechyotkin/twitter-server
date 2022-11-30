@@ -4,12 +4,14 @@ import {UserService} from "../user/user.service";
 import {LoginUserDto} from "./dto/login-user.dto";
 import * as bcrypt from 'bcryptjs'
 import { JwtTokenService } from "../jwt-token/jwt-token.service";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class AuthService {
 
     constructor(private userService: UserService,
-                private jwtTokenService: JwtTokenService) {}
+                private jwtTokenService: JwtTokenService,
+                private mailService: MailService) {}
 
     async registration(dto: RegistrationUserDto) {
         const candidate = await this.userService.getOneByEmail(dto.email)
@@ -21,6 +23,7 @@ export class AuthService {
         const hashedPassword = await bcrypt.hash(dto.password, 3)
 
         const user = await this.userService.createUser({email: dto.email, password: hashedPassword})
+        await this.mailService.sendRegistrationEmail(user.email)
         return user
     }
 

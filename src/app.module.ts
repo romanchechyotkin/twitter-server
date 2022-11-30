@@ -7,6 +7,7 @@ import {TweetModule} from './tweet/tweet.module';
 import {Tweet} from "./tweet/tweet.model";
 import {AuthModule} from './auth/auth.module';
 import {JwtTokenModule} from './jwt-token/jwt-token.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
     imports: [
@@ -22,12 +23,14 @@ import {JwtTokenModule} from './jwt-token/jwt-token.module';
             models: [User, Tweet],
         }),
         ConfigModule.forRoot({
-            envFilePath: '.env'
+            envFilePath: '.env',
+            isGlobal: true,
         }),
         UserModule,
         TweetModule,
         AuthModule,
-        JwtTokenModule
+        JwtTokenModule,
+        MailModule
     ],
 })
 
