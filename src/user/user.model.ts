@@ -16,7 +16,16 @@ export class User extends Model<User, UserCreationAttrs> {
     email: string;
 
     @Column({type: DataType.TEXT, allowNull: false})
+    full_name: string;
+
+    @Column({type: DataType.TEXT, unique: true, allowNull: false})
+    user_name: string;
+
+    @Column({type: DataType.TEXT, allowNull: false})
     password: string;
+
+    @Column({type: DataType.BOOLEAN, defaultValue: false})
+    isConfirmed: boolean;
 
     @HasMany(() => Tweet)
     tweets: Tweet[];
