@@ -4,6 +4,11 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Mail, MailDocument} from "./mail.schema";
 import {Model} from "mongoose";
 
+enum MailTemplates {
+    REGISTRATION='registration',
+    LOGIN='login',
+}
+
 @Injectable()
 export class MailService {
 
@@ -16,13 +21,13 @@ export class MailService {
             to: email,
             from: process.env.SMTP_USER,
             subject: 'Welcome to Nice App!',
-            template: './registration.hbs',
+            template: `./${MailTemplates.REGISTRATION}.hbs`,
             context: {
                 name: email.split('@')[0]
             }
         })
 
-        await this.mailModel.create({email: email, template: 'registration'})
+        await this.mailModel.create({email: email, template: MailTemplates.REGISTRATION})
 
     }
 
