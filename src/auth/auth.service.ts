@@ -14,16 +14,28 @@ export class AuthService {
                 private mailService: MailService) {}
 
     async registration(dto: RegistrationUserDto) {
-        const candidate = await this.userService.getOneByEmail(dto.email)
+        const emailCandidate = await this.userService.getOneByEmail(dto.email)
+        const userNameCandidate = await this.userService.getOneByUserName(dto.user_name)
 
-        if (candidate) {
+        if (emailCandidate) {
             throw new HttpException('user already exists', HttpStatus.BAD_REQUEST)
         }
 
         const hashedPassword = await bcrypt.hash(dto.password, 3)
 
-        const user = await this.userService.createUser({email: dto.email, password: hashedPassword})
+        if (userNameCandidate) {
+            throw new HttpException('this username is used', HttpStatus.BAD_REQUEST)
+        }
+
+        const user = await this.userService.createUser({
+            email: dto.email,
+            password: hashedPassword,
+            full_name: dto.full_name,
+            user_name: dto.user_name
+        })
+
         await this.mailService.sendRegistrationEmail(user.email)
+
         return user
     }
 
