@@ -1,6 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Put, Req, UseGuards } from "@nestjs/common";
 import {UserService} from "./user.service";
-import {UpdateUserDto} from "./dto/update-user.dto";
+import {
+    EmailValidation,
+    FullNameValidation,
+    PasswordValidation,
+    UserNameValidation
+} from "./dto/update-user.dto";
 import {LoginGuard} from "../auth/login.guard";
 
 @Controller('user')
@@ -18,11 +23,32 @@ export class UserController {
         return this.userService.getOneUser(id)
     }
 
-    @Put()
+    @Put('/email')
     @UseGuards(LoginGuard)
-    updateUser(@Body() updateUserDto: UpdateUserDto, @Req() req) {
+    updateUserEmail(@Body() emailDto: EmailValidation, @Req() req) {
         const {id} = req.user
-        return this.userService.updateUser(updateUserDto, id)
+        return this.userService.updateUserEmail(emailDto, id)
+    }
+
+    @Put('/password')
+    @UseGuards(LoginGuard)
+    updateUserPassword(@Body() passwordDto: PasswordValidation, @Req() req) {
+        const {id} = req.user
+        return this.userService.updateUserPassword(passwordDto, id)
+    }
+
+    @Put('/full-name')
+    @UseGuards(LoginGuard)
+    updateUserFullName(@Body() fullNameDto: FullNameValidation, @Req() req) {
+        const {id} = req.user
+        return this.userService.updateUserFullName(fullNameDto, id)
+    }
+
+    @Put('/user-name')
+    @UseGuards(LoginGuard)
+    updateUserUserName(@Body() userNameDto: UserNameValidation, @Req() req) {
+        const {id} = req.user
+        return this.userService.updateUserUserName(userNameDto, id)
     }
 
     @Delete()

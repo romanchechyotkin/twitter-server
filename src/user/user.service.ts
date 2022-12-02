@@ -20,11 +20,19 @@ export class UserService {
         return this.userModel.findOne({where: {email}})
     }
 
+    async getOneByUserName(user_name) {
+        return this.userModel.findOne({where: {user_name}})
+    }
+
     async createUser(dto) {
         return this.userModel.create(dto)
     }
 
-    async updateUser(dto, id) {
+    async updateUserEmail(dto, id) {
+        return this.userModel.update({email: dto.email}, {where: {id}})
+    }
+
+    async updateUserPassword(dto, id) {
         const user = await this.userModel.findOne({where: {id}})
 
         const isValidPassword = await bcrypt.compare(dto.password, user.password)
@@ -32,9 +40,17 @@ export class UserService {
             throw new HttpException('wrong password', HttpStatus.BAD_REQUEST)
         }
 
-        const newHashedPassword = await bcrypt.hash(dto.newPassword, 3)
+        const newHashPassword = await bcrypt.hash(dto.newPassword, 3)
 
-        return this.userModel.update({email: dto.email, password: newHashedPassword}, {where: {id}})
+        return this.userModel.update({password: newHashPassword}, {where: {id}})
+    }
+
+    async updateUserFullName(dto, id) {
+        return this.userModel.update({full_name: dto.full_name}, {where: {id}})
+    }
+
+    async updateUserUserName(dto, id) {
+        return this.userModel.update({user_name: dto.user_name}, {where: {id}})
     }
 
     async deleteUser(id) {
