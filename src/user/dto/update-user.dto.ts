@@ -19,20 +19,13 @@ export class PasswordValidation {
 
 }
 
-export class FullNameValidation {
+export class UserNamesDto {
 
-    @IsNotEmpty()
-    @Length(0, 50, {message: 'maximum 50 characters'})
+    @Length(0, 50, {message: 'maximum 50 characters', always: false})
     readonly full_name: string;
 
-}
-
-export class UserNameValidation {
-
-    @IsNotEmpty()
-    @Length(0, 15, {message: 'maximum 15 characters'})
+    @Length(1, 15, {message: 'maximum 15 characters', always: false})
     readonly user_name: string;
 
 }
-
 

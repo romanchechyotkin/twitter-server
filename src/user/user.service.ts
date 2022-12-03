@@ -45,12 +45,13 @@ export class UserService {
         return this.userModel.update({password: newHashPassword}, {where: {id}})
     }
 
-    async updateUserFullName(dto, id) {
-        return this.userModel.update({full_name: dto.full_name}, {where: {id}})
-    }
+    async updateUserNames(dto, id) {
+        const user = await this.userModel.findOne({where: {user_name: dto.user_name}})
+        if (user) {
+            throw new HttpException('this username is used', HttpStatus.BAD_REQUEST)
+        }
 
-    async updateUserUserName(dto, id) {
-        return this.userModel.update({user_name: dto.user_name}, {where: {id}})
+        return this.userModel.update({full_name: dto.full_name, user_name: dto.user_name}, {where: {id}})
     }
 
     async deleteUser(id) {

@@ -1,10 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Put, Req, UseGuards } from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Patch, Put, Req, UseGuards} from "@nestjs/common";
 import {UserService} from "./user.service";
 import {
     EmailValidation,
-    FullNameValidation,
     PasswordValidation,
-    UserNameValidation
+    UserNamesDto,
 } from "./dto/update-user.dto";
 import {LoginGuard} from "../auth/login.guard";
 
@@ -37,18 +36,11 @@ export class UserController {
         return this.userService.updateUserPassword(passwordDto, id)
     }
 
-    @Put('/full-name')
+    @Patch()
     @UseGuards(LoginGuard)
-    updateUserFullName(@Body() fullNameDto: FullNameValidation, @Req() req) {
+    updateUser(@Body() updateUserDto: UserNamesDto, @Req() req) {
         const {id} = req.user
-        return this.userService.updateUserFullName(fullNameDto, id)
-    }
-
-    @Put('/user-name')
-    @UseGuards(LoginGuard)
-    updateUserUserName(@Body() userNameDto: UserNameValidation, @Req() req) {
-        const {id} = req.user
-        return this.userService.updateUserUserName(userNameDto, id)
+        return this.userService.updateUserNames(updateUserDto, id)
     }
 
     @Delete()
