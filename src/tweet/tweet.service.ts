@@ -1,41 +1,57 @@
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from "@nestjs/sequelize";
-import {Tweet} from "./tweet.model";
-import { UserService } from "../user/user.service";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {UserService} from "../user/user.service";
+import * as uuid from 'uuid'
+import {InjectModel} from "@nestjs/mongoose";
+import {Tweet, TweetDocument} from "./tweet.schema";
+import {Model} from "mongoose";
 
 @Injectable()
 export class TweetService {
 
-    constructor(@InjectModel(Tweet) private tweetModel: typeof Tweet,
+    constructor(@InjectModel(Tweet.name) private tweetModel: Model<TweetDocument>,
                 private userService: UserService) {}
 
     async getAllTweets() {
-        return this.tweetModel.findAll()
+        return this.tweetModel.find()
     }
 
     async getAllUserTweets(user_id) {
-        return this.tweetModel.findAll({where: {user_id}, order: [['createdAt', "DESC"]]})
+        return this.tweetModel.find({user: user_id}, {}, {sort: {date: -1}})
     }
 
     async getOneTweet(id) {
-        return this.tweetModel.findOne({where: {id}})
+        return this.tweetModel.findOne({_id: id}).populate(['user', 'likes'])
     }
 
     async createTweet(dto) {
         const user = await this.userService.getOneUser(dto.user_id)
-        const tweet = await this.tweetModel.create({text: dto.text, user_id: dto.user_id})
-        await user.$add('tweets', [tweet.id])
-        return tweet
+        if (!user) {
+            throw new HttpException('unauthorized', HttpStatus.UNAUTHORIZED)
+        }
+
+        return this.tweetModel.create({text: dto.text, user: dto.user_id})
     }
 
     async updateTweet(dto, id, user) {
         const user_id = user.id
-        return this.tweetModel.update(dto, {where: {id, user_id}})
+        return this.tweetModel.findOneAndUpdate({_id: id, user: user_id}, {text: dto.text})
     }
 
     async deleteTweet(id, user) {
         const user_id = user.id
-        return this.tweetModel.destroy({where: {id, user_id}})
+        return this.tweetModel.remove({_id: id, user: user_id})
+    }
+
+    async likeTweet(id, user_id) {
+        const tweet = await this.tweetModel.findOne({_id: id})
+        const user = await this.userService.getOneUser(user_id)
+
+        const _id = user._id
+        if(!tweet) {
+            throw new HttpException('tweet not found', HttpStatus.BAD_REQUEST)
+        }
+
+        return this.tweetModel.updateOne({_id: id}, {$push: {'likes': {_id}}})
     }
 
 }

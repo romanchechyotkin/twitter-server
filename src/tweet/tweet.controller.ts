@@ -1,8 +1,18 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+    Req,
+    UseGuards,
+} from "@nestjs/common";
 import {TweetService} from "./tweet.service";
 import {LoginGuard} from "../auth/login.guard";
 import {CreateTweetDto} from "./dto/create-tweet.dto";
-import { UpdateTweetDto } from "./dto/update-tweet.dto";
+import {UpdateTweetDto} from "./dto/update-tweet.dto";
 
 @Controller('tweet')
 export class TweetController {
@@ -27,8 +37,11 @@ export class TweetController {
 
     @Post()
     @UseGuards(LoginGuard)
-    createTweet(@Body() createTweetDto: CreateTweetDto, @Req() req) {
+    createTweet(@Body() createTweetDto: CreateTweetDto,
+                @Req() req,
+    ) {
         const user = req.user
+        // const file = files[0]
         return this.tweetService.createTweet({...createTweetDto, user_id: user.id})
     }
 
@@ -44,6 +57,13 @@ export class TweetController {
     deleteTweet(@Param('id') id, @Req() req) {
         const user = req.user
         return this.tweetService.deleteTweet(id, user)
+    }
+
+    @Post('like/:id')
+    @UseGuards(LoginGuard)
+    likeTweet(@Param('id') id, @Req() req) {
+        const user = req.user
+        return this.tweetService.likeTweet(id, user._id)
     }
 
 }

@@ -50,7 +50,12 @@ export class AuthService {
             throw new HttpException('wrong password', HttpStatus.BAD_REQUEST)
         }
 
-        const tokens = await this.jwtTokenService.generateTokens({id: user.id, email: user.email})
+        const tokens = await this.jwtTokenService.generateTokens({
+            id: user.id,
+            email: user.email,
+            user_name: user.user_name,
+            full_name: user.full_name
+        })
 
         return {user, ...tokens}
     }
