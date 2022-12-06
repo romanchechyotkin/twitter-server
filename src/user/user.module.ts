@@ -1,15 +1,14 @@
 import { Module } from "@nestjs/common";
 import {UserController} from './user.controller';
 import {UserService} from './user.service';
-import { User } from "./user.model";
-import { SequelizeModule } from "@nestjs/sequelize";
-import { Tweet } from "../tweet/tweet.model";
 import { JwtModule } from "@nestjs/jwt";
+import { MongooseModule } from "@nestjs/mongoose";
+import { User, UserSchema } from "./user.schema";
 
 @Module({
     imports: [
         JwtModule,
-        SequelizeModule.forFeature([User, Tweet]),
+        MongooseModule.forFeature([{name: User.name, schema: UserSchema}]),
     ],
     controllers: [UserController],
     providers: [UserService],

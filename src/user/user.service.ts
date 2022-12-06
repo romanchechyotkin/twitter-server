@@ -1,27 +1,28 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import {InjectModel} from "@nestjs/sequelize";
-import {User} from "./user.model";
+import { User, UserDocument } from "./user.schema";
 import * as bcrypt from 'bcryptjs'
+import { Model } from "mongoose";
+import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class UserService {
 
-    constructor(@InjectModel(User) private userModel: typeof User) {}
+    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
     async getAllUsers() {
-        return this.userModel.findAll()
+        return this.userModel.find()
     }
 
     async getOneUser(id) {
-        return this.userModel.findOne({where: {id}})
+        return this.userModel.findOne({id})
     }
 
     async getOneByEmail(email) {
-        return this.userModel.findOne({where: {email}})
+        return this.userModel.findOne({email})
     }
 
     async getOneByUserName(user_name) {
-        return this.userModel.findOne({where: {user_name}})
+        return this.userModel.findOne({user_name})
     }
 
     async createUser(dto) {
@@ -29,11 +30,12 @@ export class UserService {
     }
 
     async updateUserEmail(dto, id) {
-        return this.userModel.update({email: dto.email}, {where: {id}})
+        const user = await this.userModel.updateOne({id}, {email: dto.email})
+        return user
     }
 
     async updateUserPassword(dto, id) {
-        const user = await this.userModel.findOne({where: {id}})
+        const user = await this.userModel.findOne({id})
 
         const isValidPassword = await bcrypt.compare(dto.password, user.password)
         if (!isValidPassword) {
@@ -42,20 +44,22 @@ export class UserService {
 
         const newHashPassword = await bcrypt.hash(dto.newPassword, 3)
 
-        return this.userModel.update({password: newHashPassword}, {where: {id}})
+        const userWithNewPassword = await this.userModel.updateOne({id}, {password: newHashPassword})
+
+        return userWithNewPassword
     }
 
     async updateUserNames(dto, id) {
-        const user = await this.userModel.findOne({where: {user_name: dto.user_name}})
+        const user = await this.userModel.findOne({user_name: dto.user_name})
         if (user) {
             throw new HttpException('this username is used', HttpStatus.BAD_REQUEST)
         }
 
-        return this.userModel.update({full_name: dto.full_name, user_name: dto.user_name}, {where: {id}})
+        return this.userModel.findOneAndUpdate({id}, {full_name: dto.full_name, user_name: dto.user_name})
     }
 
     async deleteUser(id) {
-        return this.userModel.destroy({where: {id}})
+        return this.userModel.remove({id})
     }
 
 }
