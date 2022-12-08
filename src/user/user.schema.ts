@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
+
+    _id: mongoose.Types.ObjectId | string;
 
     @Prop({type: String, required: true, unique: true})
     email: string;
@@ -17,6 +19,12 @@ export class User {
 
     @Prop({type: String, required: true})
     password: string;
+
+    @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}]})
+    follows: User[];
+
+    @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}]})
+    followers: User[];
 
     @Prop({type: Boolean, default: false})
     isConfirmed: boolean;

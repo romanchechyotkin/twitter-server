@@ -3,7 +3,7 @@ import {UserService} from "../user/user.service";
 import * as uuid from 'uuid'
 import {InjectModel} from "@nestjs/mongoose";
 import {Tweet, TweetDocument} from "./tweet.schema";
-import {Model} from "mongoose";
+import { Model } from "mongoose";
 
 @Injectable()
 export class TweetService {
@@ -42,16 +42,46 @@ export class TweetService {
         return this.tweetModel.remove({_id: id, user: user_id})
     }
 
+    async getAllLikesTweets(user_id) {
+        const tweets = await this.tweetModel.find({
+            likes: user_id
+        }).populate(['likes', 'user'])
+        return tweets
+    }
+
     async likeTweet(id, user_id) {
         const tweet = await this.tweetModel.findOne({_id: id})
         const user = await this.userService.getOneUser(user_id)
-
         const _id = user._id
-        if(!tweet) {
+        if (!tweet) {
             throw new HttpException('tweet not found', HttpStatus.BAD_REQUEST)
         }
 
+        const {likes} = tweet
+        // @ts-ignore
+        if (likes.includes(user._id)) {
+            throw new HttpException('user already liked', HttpStatus.BAD_REQUEST)
+        }
+
         return this.tweetModel.updateOne({_id: id}, {$push: {'likes': {_id}}})
+    }
+
+    async removeLikeTweet(id, user_id) {
+        const tweet = await this.tweetModel.findOne({_id: id})
+        const user = await this.userService.getOneUser(user_id)
+        const _id = user._id
+        if (!tweet) {
+            throw new HttpException('tweet not found', HttpStatus.BAD_REQUEST)
+        }
+
+        const {likes} = tweet
+
+        // @ts-ignore
+        if (likes.includes(user._id)) {
+            return this.tweetModel.updateOne({_id: id}, {$pull: {'likes': _id}})
+        }
+
+        throw new HttpException('user already delete like', HttpStatus.BAD_REQUEST)
     }
 
 }

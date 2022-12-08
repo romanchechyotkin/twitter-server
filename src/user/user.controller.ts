@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Patch, Put, Req, UseGuards} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, UseGuards } from "@nestjs/common";
 import {UserService} from "./user.service";
 import {
     EmailValidation,
@@ -49,5 +49,13 @@ export class UserController {
         const {id} = req.user
         return this.userService.deleteUser(id)
     }
+
+    @Post('follow/:id')
+    @UseGuards(LoginGuard)
+    followUser(@Param('id') id, @Req() req) {
+        const user = req.user
+        return this.userService.followUser(id, user.id)
+    }
+
 
 }

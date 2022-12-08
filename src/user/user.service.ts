@@ -14,7 +14,7 @@ export class UserService {
     }
 
     async getOneUser(id) {
-        return this.userModel.findOne({id})
+        return this.userModel.findOne({_id: id})
     }
 
     async getOneByEmail(email) {
@@ -30,8 +30,7 @@ export class UserService {
     }
 
     async updateUserEmail(dto, id) {
-        const user = await this.userModel.updateOne({id}, {email: dto.email})
-        return user
+        return this.userModel.updateOne({id}, {email: dto.email})
     }
 
     async updateUserPassword(dto, id) {
@@ -44,9 +43,8 @@ export class UserService {
 
         const newHashPassword = await bcrypt.hash(dto.newPassword, 3)
 
-        const userWithNewPassword = await this.userModel.updateOne({id}, {password: newHashPassword})
+        return this.userModel.updateOne({id}, {password: newHashPassword})
 
-        return userWithNewPassword
     }
 
     async updateUserNames(dto, id) {
@@ -60,6 +58,17 @@ export class UserService {
 
     async deleteUser(id) {
         return this.userModel.remove({id})
+    }
+
+    async followUser(toFollowUserId, _id) {
+        const userToFollow = await this.userModel.findOne({_id: toFollowUserId})
+        if(!userToFollow) {
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND)
+        }
+
+        await this.userModel.updateOne({_id}, {$push: {'follows': {toFollowUserId}}})
+        await this.userModel.updateOne({_id: toFollowUserId}, {$push: {'followers': {_id}}})
+
     }
 
 }

@@ -59,11 +59,24 @@ export class TweetController {
         return this.tweetService.deleteTweet(id, user)
     }
 
+    @Get('likes/:id')
+    @UseGuards(LoginGuard)
+    getAllLikesTweets(@Param('id') id) {
+        return this.tweetService.getAllLikesTweets(id)
+    }
+
     @Post('like/:id')
     @UseGuards(LoginGuard)
     likeTweet(@Param('id') id, @Req() req) {
         const user = req.user
-        return this.tweetService.likeTweet(id, user._id)
+        return this.tweetService.likeTweet(id, user.id)
+    }
+
+    @Post('deleteLike/:id')
+    @UseGuards(LoginGuard)
+    removeLikeTweet(@Param('id') id, @Req() req) {
+        const user = req.user
+        return this.tweetService.removeLikeTweet(id, user.id)
     }
 
 }
