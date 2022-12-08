@@ -66,8 +66,8 @@ export class UserService {
             throw new HttpException('user not found', HttpStatus.NOT_FOUND)
         }
 
-        await this.userModel.updateOne({_id}, {$push: {'follows': {toFollowUserId}}})
-        await this.userModel.updateOne({_id: toFollowUserId}, {$push: {'followers': {_id}}})
+        await this.userModel.updateOne({_id}, {$push: {'follows': toFollowUserId}})
+        await this.userModel.updateOne({_id: toFollowUserId}, {$push: {'followers': _id}})
 
     }
 
