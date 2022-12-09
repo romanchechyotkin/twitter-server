@@ -1,10 +1,10 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
-import { User } from "../user/user.schema";
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+import mongoose, {HydratedDocument} from 'mongoose';
+import  {User} from "../user/user.schema";
 
 export type TweetDocument = HydratedDocument<Tweet>;
 
-@Schema()
+@Schema({timestamps: true})
 export class Tweet {
 
     @Prop({type: String, required: true})
@@ -12,9 +12,6 @@ export class Tweet {
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
     user: User
-
-    @Prop({default: new Date()})
-    date: Date;
 
     @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]})
     likes: User[]

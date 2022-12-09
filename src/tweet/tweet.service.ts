@@ -16,7 +16,7 @@ export class TweetService {
     }
 
     async getAllUserTweets(user_id) {
-        return this.tweetModel.find({user: user_id}, {}, {sort: {date: -1}})
+        return this.tweetModel.find({user: user_id}, {}, {sort: {createdAt: -1}, limit: 5})
     }
 
     async getOneTweet(id) {
