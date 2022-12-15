@@ -12,11 +12,36 @@ export class TweetService {
                 private userService: UserService) {}
 
     async getAllTweets() {
-        return this.tweetModel.find()
+        // let tweets = await this.tweetModel.aggregate([
+        //     {$match: {}},
+        //     {$project: {
+        //         "_id": 1,
+        //         "text": 1,
+        //         "likes": 1,
+        //         "createdAt": 1,
+        //         "user": 1
+        //     }}
+        // ])
+        
+        // await this.tweetModel.populate(tweets, {path: "user"})
+        // console.log(tweets);
+        
+        // tweets = await this.tweetModel.aggregate([
+        //     {$project: {
+        //         "_id": 1,
+        //         "text": 1,
+        //         "likes": 1,
+        //         "createdAt": 1,
+        //         "user_name": "$user.user_name",
+        //         "full_name": "$user.full_name",
+        //     }}
+        // ])
+        const tweets = await this.tweetModel.find({}, {}, {sort: {date: -1}}).populate('user')
+        return tweets
     }
 
     async getAllUserTweets(user_id) {
-        return this.tweetModel.find({user: user_id}, {}, {sort: {createdAt: -1}, limit: 5})
+        return this.tweetModel.find({user: user_id}, {}, {sort: {date: -1}, limit: 5})
     }
 
     async getOneTweet(id) {
@@ -28,8 +53,8 @@ export class TweetService {
         if (!user) {
             throw new HttpException('unauthorized', HttpStatus.UNAUTHORIZED)
         }
-
-        return this.tweetModel.create({text: dto.text, user: dto.user_id})
+        const date = new Date().toUTCString()
+        return (await this.tweetModel.create({text: dto.text, user: dto.user_id, date: date})).populate('user')
     }
 
     async updateTweet(dto, id, user) {

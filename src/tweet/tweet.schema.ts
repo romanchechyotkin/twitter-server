@@ -4,7 +4,7 @@ import  {User} from "../user/user.schema";
 
 export type TweetDocument = HydratedDocument<Tweet>;
 
-@Schema({timestamps: true})
+@Schema()
 export class Tweet {
 
     @Prop({type: String, required: true})
@@ -12,6 +12,15 @@ export class Tweet {
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
     user: User
+
+    @Prop()
+    date: string;
+
+    @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]})
+    replies: User[]
+
+    @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]})
+    retweets: User[]
 
     @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]})
     likes: User[]
