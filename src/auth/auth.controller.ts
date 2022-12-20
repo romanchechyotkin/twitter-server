@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, Param, Query } from "@nestjs/common";
 import {Response, Request} from "express";
 import {AuthService} from "./auth.service";
 import {RegistrationUserDto} from "./dto/registration-user.dto";
@@ -14,6 +14,12 @@ export class AuthController {
         return this.authService.registration(registrationDto)
     }
 
+    @Get('/checkEmail/:email')
+    async checkEmail(@Param('email') email) {
+        const res = await this.authService.checkEmail(email)
+        return res
+    }
+
     @Post('/login')
     async login(@Body() loginDto: LoginUserDto, @Res({passthrough: true}) res: Response) {
         const userLoginData = await this.authService.login(loginDto)
@@ -22,7 +28,7 @@ export class AuthController {
         })
         return userLoginData
     }
-
+    
     @Post('/logout')
     async logout(@Req() req: Request, @Res({passthrough: true}) res: Response) {
         res.clearCookie('refreshToken')

@@ -39,6 +39,15 @@ export class AuthService {
         return user
     }
 
+   async checkEmail (email: string) {
+        const user = await this.userService.getOneByEmail(email)
+        if(!user) {
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND)
+        }
+
+        return user
+   }
+
     async login(dto: LoginUserDto) {
         const user = await this.userService.getOneByEmail(dto.email)
         if (!user) {

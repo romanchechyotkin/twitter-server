@@ -53,7 +53,7 @@ export class TweetService {
         if (!user) {
             throw new HttpException('unauthorized', HttpStatus.UNAUTHORIZED)
         }
-        const date = new Date().toUTCString()
+        const date = new Date().getTime()
         return (await this.tweetModel.create({text: dto.text, user: dto.user_id, date: date})).populate('user')
     }
 
