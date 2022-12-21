@@ -26,6 +26,9 @@ export class User {
     @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}]})
     followers: User[];
 
+    @Prop({type: String, default: ""})
+    avatar: string;
+
     @Prop({type: Boolean, default: false})
     isConfirmed: boolean;
 

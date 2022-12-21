@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Put,
+    Req,
+    UploadedFiles,
+    UseGuards,
+    UseInterceptors
+} from "@nestjs/common";
 import {UserService} from "./user.service";
 import {
     EmailValidation,
@@ -6,6 +19,7 @@ import {
     UserNamesDto,
 } from "./dto/update-user.dto";
 import {LoginGuard} from "../auth/login.guard";
+import {FilesInterceptor} from "@nestjs/platform-express";
 
 @Controller('user')
 export class UserController {
@@ -57,5 +71,13 @@ export class UserController {
         return this.userService.followUser(id, user.id)
     }
 
+    @Post('/avatar')
+    @UseGuards(LoginGuard)
+    @UseInterceptors(FilesInterceptor('file'))
+    uploadAvatar(@Req() req, @UploadedFiles() files: Array<Express.Multer.File>) {
+        const avatar = files[0]
+        const user = req.user
+        return this.userService.uploadAvatar(avatar, user.id)
+    }
 
 }

@@ -1,8 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { User, UserDocument } from "./user.schema";
-import * as bcrypt from 'bcryptjs'
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
+import * as path from "path";
+import * as fs from "fs";
+import * as bcrypt from 'bcryptjs'
+import * as uuid from 'uuid'
 
 @Injectable()
 export class UserService {
@@ -69,6 +72,20 @@ export class UserService {
         await this.userModel.updateOne({_id}, {$push: {'follows': toFollowUserId}})
         await this.userModel.updateOne({_id: toFollowUserId}, {$push: {'followers': _id}})
 
+    }
+
+    async uploadAvatar(avatar, userId) {
+        const user = await this.userModel.findOne({_id: userId})
+
+        const avatarName = uuid.v4() + '.jpg'
+
+        const filePath = path.resolve(__dirname, '..', 'static')
+        fs.writeFileSync(path.resolve(filePath, avatarName), avatar.buffer)
+
+        user.avatar = avatarName
+        await user.save()
+
+        return user
     }
 
 }
