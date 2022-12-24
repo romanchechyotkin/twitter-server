@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import {UserService} from "../user/user.service";
-import * as uuid from 'uuid'
 import {InjectModel} from "@nestjs/mongoose";
 import {Tweet, TweetDocument} from "./tweet.schema";
 import { Model } from "mongoose";
@@ -12,36 +11,11 @@ export class TweetService {
                 private userService: UserService) {}
 
     async getAllTweets() {
-        // let tweets = await this.tweetModel.aggregate([
-        //     {$match: {}},
-        //     {$project: {
-        //         "_id": 1,
-        //         "text": 1,
-        //         "likes": 1,
-        //         "createdAt": 1,
-        //         "user": 1
-        //     }}
-        // ])
-        
-        // await this.tweetModel.populate(tweets, {path: "user"})
-        // console.log(tweets);
-        
-        // tweets = await this.tweetModel.aggregate([
-        //     {$project: {
-        //         "_id": 1,
-        //         "text": 1,
-        //         "likes": 1,
-        //         "createdAt": 1,
-        //         "user_name": "$user.user_name",
-        //         "full_name": "$user.full_name",
-        //     }}
-        // ])
-        const tweets = await this.tweetModel.find({}, {}, {sort: {date: -1}}).populate('user')
-        return tweets
+        return this.tweetModel.find({}, {}, {sort: {date: -1}}).populate('user')
     }
 
     async getAllUserTweets(user_id) {
-        return this.tweetModel.find({user: user_id}, {}, {sort: {date: -1}, limit: 5})
+        return this.tweetModel.find({user: user_id}, {}, {sort: {date: -1}}).populate('user')
     }
 
     async getOneTweet(id) {
@@ -68,10 +42,9 @@ export class TweetService {
     }
 
     async getAllLikesTweets(user_id) {
-        const tweets = await this.tweetModel.find({
+        return this.tweetModel.find({
             likes: user_id
         }).populate(['likes', 'user'])
-        return tweets
     }
 
     async likeTweet(id, user_id) {
