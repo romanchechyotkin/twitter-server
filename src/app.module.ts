@@ -16,6 +16,9 @@ import * as process from "process";
         MongooseModule.forRoot(process.env.MONGO_URI),
         ServeStaticModule.forRoot({
             rootPath: path.resolve(__dirname, 'static'),
+            serveStaticOptions: {
+                fallthrough: false
+            }
         }),
         UserModule,
         TweetModule,
