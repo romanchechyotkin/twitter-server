@@ -72,6 +72,7 @@ export class UserService {
         await this.userModel.updateOne({_id}, {$push: {'follows': toFollowUserId}})
         await this.userModel.updateOne({_id: toFollowUserId}, {$push: {'followers': _id}})
 
+        return this.userModel.findOne({_id})
     }
 
     async uploadAvatar(avatar, userId) {
