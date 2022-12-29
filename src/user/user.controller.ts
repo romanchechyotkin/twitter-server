@@ -71,6 +71,13 @@ export class UserController {
         return this.userService.followUser(id, user.id)
     }
 
+    @Post('unfollow/:id')
+    @UseGuards(LoginGuard)
+    unfollowUser(@Param('id') id, @Req() req) {
+        const user = req.user
+        return this.userService.unfollowUser(id, user.id)
+    }
+
     @Post('/avatar')
     @UseGuards(LoginGuard)
     @UseInterceptors(FilesInterceptor('file'))

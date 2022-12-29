@@ -75,6 +75,18 @@ export class UserService {
         return this.userModel.findOne({_id})
     }
 
+    async unfollowUser(toUnfollowUserId, _id) {
+        const userToFollow = await this.userModel.findOne({_id: toUnfollowUserId})
+        if(!userToFollow) {
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND)
+        }
+
+        await this.userModel.updateOne({_id}, {$pull: {'follows': toUnfollowUserId}})
+        await this.userModel.updateOne({_id: toUnfollowUserId}, {$pull: {'followers': _id}})
+
+        return this.userModel.findOne({_id})
+    }
+
     async uploadAvatar(avatar, userId) {
         const user = await this.userModel.findOne({_id: userId})
 
