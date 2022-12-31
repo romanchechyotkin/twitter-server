@@ -56,7 +56,9 @@ export class UserService {
             throw new HttpException('this username is used', HttpStatus.BAD_REQUEST)
         }
 
-        return this.userModel.findOneAndUpdate({id}, {full_name: dto.full_name, user_name: dto.user_name})
+        await this.userModel.findOneAndUpdate({_id: id}, {full_name: dto.full_name, user_name: dto.user_name})
+
+        return this.userModel.findOne({_id: id})
     }
 
     async deleteUser(id) {
