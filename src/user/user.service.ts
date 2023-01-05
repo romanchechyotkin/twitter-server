@@ -12,8 +12,8 @@ export class UserService {
 
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-    async getAllUsers() {
-        return this.userModel.find()
+    async getAllUsers(id) {
+        return this.userModel.find({_id: {$ne: id}})
     }
 
     async getOneUser(id) {

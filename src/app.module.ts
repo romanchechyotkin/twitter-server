@@ -7,6 +7,7 @@ import {JwtTokenModule} from './jwt-token/jwt-token.module';
 import {MailModule} from './mail/mail.module';
 import {MongooseModule} from "@nestjs/mongoose";
 import {ServeStaticModule} from "@nestjs/serve-static";
+import { MessagesModule } from './messages/messages.module';
 import * as path from "path";
 import * as process from "process";
 
@@ -24,7 +25,8 @@ import * as process from "process";
         TweetModule,
         AuthModule,
         JwtTokenModule,
-        MailModule
+        MailModule,
+        MessagesModule
     ],
 })
 

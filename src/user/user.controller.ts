@@ -6,7 +6,7 @@ import {
     Param,
     Patch,
     Post,
-    Put,
+    Put, Query,
     Req,
     UploadedFiles,
     UseGuards,
@@ -27,8 +27,8 @@ export class UserController {
     constructor(private userService: UserService) {}
 
     @Get()
-    getAllUsers() {
-        return this.userService.getAllUsers()
+    getAllUsers(@Query('id') id) {
+        return this.userService.getAllUsers(id)
     }
 
     @Get('/:id')
